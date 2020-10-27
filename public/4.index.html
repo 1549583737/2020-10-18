@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 
+        1. 对数据进行了拦截 对象 数组 （依赖收集）
+        2. template模板 =>AST语法树 =>render函数 =>虚拟dom
+        3. new vue时会产生一个 watcher（渲染watcher） vm._update(vm._render()) 创建真实的dom
+    -->
+    <!-- 
+        模板编译原理 AST语法树 (树的遍历)  将HTML语法转换成JavaScript语法  先表示出html来 => js语法
+        1.需要将模板变成一个render方法  render() { return _l(3, _c('li', {}, name)) }
+        2.需要去当前的实例上取值 with
+        3. 虚拟dom => 对象 可以描述dom结构 (diff算法)
+        4. 要生成一个真实的dom结构扔到页面中
+    -->
+    <div id="app">
+        <my-button></my-button>
+        <my-button></my-button>
+        <my-button></my-button>
+    </div>
+    <script src="/dist/vue.js"></script>
+    <script>
+        // Vue.component => Vue.extend => 返回通过对象创建一个类，通过这个类去创建一个组件去使用
+        Vue.component('my-button', {
+            template: '<button>按钮</button>'
+        });
+
+        let Sub = Vue.extend({
+
+        })
+        Sub.component('aa', {
+
+        })
+        // 先查找自己身上是否存在，没有查找父亲的__proto__
+        const vm = new Vue({ // vue2基于 options Api   tree-shaking
+            $el: '#app',
+            'my-button': {
+                template: '<button>内部按钮</button>'
+            }
+            
+        })
+
+        // 1. Vue.component => Vue.extend方法 => 生成子类的构造函数
+        // 2. 如果是组件添加了 init hook()  componentOptions => Ctor
+        // 3. 创建真实节点时 会调用init钩子 new Ctor().$mount() 内部会再给组件添加一个watcher, 会将渲染的节点放在当前实例上，并且返回
+        // 每个组件中都会有自己的watcher
+    </script>
+</body>
+</html>
